@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Chatbot</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        #chatbox {
+            border: 1px solid #ccc;
+            padding: 10px;
+            width: 300px;
+            height: 400px;
+            overflow-y: scroll;
+        }
+        #user-input {
+            width: 300px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Chat with the Bot</h1>
+    <div id="chatbox"></div>
+    <input type="text" id="user-input" placeholder="Type your message..." />
+    <button onclick="sendMessage()">Send</button>
+
+    <script>
+        async function sendMessage() {
+            const inputField = document.getElementById('user-input');
+            const userInput = inputField.value;
+            inputField.value = '';
+            document.getElementById('chatbox').innerHTML += `<div><strong>You:</strong> ${userInput}</div>`;
+            
+            const response = await fetch('/chat', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ query: userInput })
+            });
+            const data = await response.json();
+            document.getElementById('chatbox').innerHTML += `<div><strong>Bot:</strong> ${data.response}</div>`;
+            document.getElementById('chatbox').scrollTop = document.getElementById('chatbox').scrollHeight;
+        }
+    </script>
+</body>
+</html>
